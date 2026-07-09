@@ -1,0 +1,18 @@
+{
+  "name": "xyrai-backend",
+  "version": "1.0.0",
+  "description": "Unified backend for XYRAI — Oracle chat, Dream images, and Live voice — for Zajoryn AI Studios.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@google/genai": "^1.31.0",
+    "express": "^4.21.2",
+    "ws": "^8.21.0"
+  }
+}

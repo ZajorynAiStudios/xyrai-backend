@@ -170,7 +170,10 @@ app.post("/api/dream", async (req, res) => {
     const prompt = String(req.body.prompt || "").slice(0, 2000);
     const r = await fetch(`${API_ROOT}/${IMAGE_MODEL}:generateContent?key=${API_KEY}`, {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: [{ parts: [{ text: `${DREAM_STYLE}\n\nVISION: ${prompt}` }] }] }),
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: `${DREAM_STYLE}\n\nVISION: ${prompt}` }] }],
+        generationConfig: { responseModalities: ["IMAGE"] },
+      }),
     });
     const data = await r.json();
     if (!r.ok) throw new Error(data?.error?.message || `Gemini ${r.status}`);
@@ -178,7 +181,10 @@ app.post("/api/dream", async (req, res) => {
     for (const p of (data?.candidates?.[0]?.content?.parts || [])) {
       if (p.inlineData?.data) { imageUrl = `data:${p.inlineData.mimeType||"image/png"};base64,${p.inlineData.data}`; break; }
     }
-    if (!imageUrl) throw new Error("The dream did not resolve into image.");
+    if (!imageUrl) {
+      const reason = data?.candidates?.[0]?.finishReason || data?.promptFeedback?.blockReason || "no image returned";
+      throw new Error("The dream did not resolve: " + reason);
+    }
     res.json({ imageUrl });
   } catch (e) { res.status(500).json({ error: String(e.message || e) }); }
 });

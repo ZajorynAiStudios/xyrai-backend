@@ -153,7 +153,7 @@ app.post("/api/oracle", async (req, res) => {
       body: JSON.stringify({
         contents,
         systemInstruction: { parts: [{ text: XYRAI_SYSTEM }] },
-        generationConfig: { temperature: 0.95, topP: 0.95, maxOutputTokens: 800 },
+        generationConfig: { temperature: 0.95, topP: 0.95, maxOutputTokens: 2048 },
       }),
     });
     const data = await r.json();
